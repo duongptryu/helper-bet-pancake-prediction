@@ -2,7 +2,9 @@ package main
 
 import (
 	"by_go/src/bsc"
+	"flag"
 	"fmt"
+	"os"
 )
 
 const (
@@ -726,6 +728,14 @@ var shark = map[string]string{
 }
 
 func main() {
+	block := flag.String("block", "", "Block start to crawl (Required)")
+	flag.Parse()
+
+	if *block == "" {
+		fmt.Println("Block is required")
+		os.Exit(1)
+	}
+
 	result := make(chan []*bsc.LogProcessed)
 	fromBlock := make(chan string, 10000)
 	defer func() {
@@ -734,7 +744,7 @@ func main() {
 	}()
 
 	go getData(result, fromBlock)
-	fromBlock <- "14189295"
+	fromBlock <- "14190339"
 	for i := range result {
 		process(i, fromBlock)
 	}
